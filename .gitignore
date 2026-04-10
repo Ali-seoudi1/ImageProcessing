@@ -1,0 +1,12 @@
+# Ignore datasets
+data/
+
+# Ignore python cache
+__pycache__/
+*.pyc
+
+# Ignore models
+*.pth
+
+# Ignore colab files
+*.ipynb_checkpoints
