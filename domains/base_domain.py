@@ -1,3 +1,5 @@
 class BaseDomain:
+    name = "spatial"
+
     def transform(self, image):
-        return image
+        return image.convert("RGB")

@@ -10,3 +10,9 @@ __pycache__/
 
 # Ignore colab files
 *.ipynb_checkpoints
+
+# Ignore generated experiment outputs
+outputs/
+
+# Ignore IDE files
+.idea/

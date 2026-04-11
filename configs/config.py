@@ -1,7 +1,16 @@
 CONFIG = {
+    "dataset_name": "CIFAR10",
+    "data_dir": "./data",
     "batch_size": 32,
     "learning_rate": 0.001,
-    "epochs": 3,
+    "epochs": 15,
     "image_size": 224,
-    "num_classes": 10
+    "num_classes": 10,
+    "seed": 42,
+    "num_workers": 0,
+    "train_split": 0.70,
+    "val_split": 0.15,
+    "test_split": 0.15,
+    "normalize_mean": (0.485, 0.456, 0.406),
+    "normalize_std": (0.229, 0.224, 0.225),
 }
