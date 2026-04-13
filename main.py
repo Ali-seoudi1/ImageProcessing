@@ -12,6 +12,8 @@ import torch.optim as optim
 from configs.config import CONFIG
 from domains.base_domain import BaseDomain
 from domains.fourier_domain import FourierDomain
+from domains.hsv_domain import HSVDomain
+from domains.wavelet_domain import WaveletDomain
 from models.mobilenet import get_model
 from utils.dataset import get_dataloaders
 from utils.evaluate import evaluate
@@ -21,7 +23,7 @@ from utils.train import train_one_epoch
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--domain", choices=["spatial", "fourier"], default="spatial")
+    parser.add_argument("--domain", choices=["spatial", "fourier", "wavelet", "hsv"], default="spatial")
     return parser.parse_args()
 
 
@@ -36,6 +38,10 @@ def set_seed(seed):
 def get_domain(domain_name):
     if domain_name == "fourier":
         return FourierDomain()
+    if domain_name == "wavelet":
+        return WaveletDomain()
+    if domain_name == "hsv":
+        return HSVDomain()
     return BaseDomain()
 
 
@@ -44,6 +50,15 @@ def compute_confusion_matrix(predictions, labels, num_classes):
     for true_label, predicted_label in zip(labels, predictions):
         matrix[true_label, predicted_label] += 1
     return matrix
+
+
+def compute_per_class_accuracy(confusion_matrix):
+    per_class_accuracy = {}
+    for class_index in range(confusion_matrix.shape[0]):
+        total = confusion_matrix[class_index].sum()
+        correct = confusion_matrix[class_index, class_index]
+        per_class_accuracy[str(class_index)] = float(correct / total) if total > 0 else 0.0
+    return per_class_accuracy
 
 
 def main():
@@ -96,6 +111,7 @@ def main():
     print(f"Test Loss={test_loss:.4f} | Test Accuracy={test_acc:.4f}")
 
     confusion_matrix = compute_confusion_matrix(predictions, labels, CONFIG["num_classes"])
+    per_class_accuracy = compute_per_class_accuracy(confusion_matrix)
     class_names = [str(index) for index in range(CONFIG["num_classes"])]
 
     plot_curves(history, output_dir)
@@ -111,6 +127,7 @@ def main():
         "test_loss": test_loss,
         "test_acc": test_acc,
         "confusion_matrix": confusion_matrix.tolist(),
+        "per_class_accuracy": per_class_accuracy,
     }
 
     with open(output_dir / "results.json", "w", encoding="utf-8") as results_file:

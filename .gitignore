@@ -13,6 +13,7 @@ __pycache__/
 
 # Ignore generated experiment outputs
 outputs/
+outputs_notebook/*/mobilenet_weights.pth
 
 # Ignore IDE files
 .idea/
